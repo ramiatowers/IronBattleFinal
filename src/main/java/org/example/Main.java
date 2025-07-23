@@ -12,13 +12,13 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== MAIN MENU ===");
+            System.out.println("\n=== MAIN MENU ===\n");
             System.out.println("1. Create character");
             System.out.println("2. Show characters");
             System.out.println("3. Start battle");
             System.out.println("4. Exit");
             System.out.println("5. Random battle");
-            System.out.println("6. Import characters from CSV");
+            System.out.println("6. Import characters from CSV\n");
             System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine();
@@ -187,6 +187,9 @@ public class Main {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
+                for (int i = 0; i < parts.length; i++) {
+                    parts[i] = parts[i].replace("\"", "").trim();
+                }
 
                 if (parts.length != 5) {
                     System.out.println("⚠️ Invalid line: " + line);
