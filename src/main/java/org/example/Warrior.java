@@ -1,20 +1,54 @@
+import org.example.Attacker;
+import org.example.GameCharacter;
+
 import java.util.Random;
 
-public class Warrior extends Character implements Attack {
+public class Warrior extends GameCharacter implements Attacker {
+    // === PROPERTIES ===
     private int stamina;
     private int strength;
     Random r = new Random();
 
+    // === CONSTRUCTOR ===
     public Warrior(String name, int hp, int stamina, int strength) {
-        super(name, Auxiliar.topHP(hp));
-        this.stamina = Auxiliar.topStamina(stamina);
-        this.strength = Auxiliar.topStrength(strength);
-        System.out.println("Character created! " +name);
-
+        super(name, validateHp(hp));
+        this.stamina = validateStamina(stamina);
+        this.strength = validateStrength(strength);
+        System.out.println("✅ Warrior created: " + name);
     }
 
-//    GETTERS & SETTERS
+    // === VALIDATORS ===
+    private static int validateHp(int hp) {
+        if (hp < 100) {
+            return 100;
+        } else if (hp > 200) {
+            return 200;
+        } else {
+            return hp;
+        }
+    }
 
+    private static int validateStamina(int stamina) {
+        if (stamina < 10) {
+            return 10;
+        } else if (stamina > 50) {
+            return 50;
+        } else {
+            return stamina;
+        }
+    }
+
+    private static int validateStrength(int strength) {
+        if (strength < 1) {
+            return 1;
+        } else if (strength > 10) {
+            return 10;
+        } else {
+            return strength;
+        }
+    }
+
+    // === GETTERS & SETTERS ===
     public int getStamina() {
         return stamina;
     }
@@ -31,83 +65,63 @@ public class Warrior extends Character implements Attack {
         this.strength = strength;
     }
 
-    public void attackTest(Character target){
-        int typeAttack = r.nextInt(2);
+    // === ATTACK ===
+    @Override
+    public void attack(GameCharacter target) {
+        int typeAttack = r.nextInt(2); // 0 = Heavy attack, 1 = Weak attack
 
-        //Comprobar si está vivo o no
-        if(target.getHp() <= 0){
+        if (target.getHp() <= 0) {
             target.setAlive(false);
+            return;
         }
 
-        //escoger ataque (aleatorio a ver si sale esto)
-        switch (typeAttack){
+        switch (typeAttack) {
             case 0:
-                if(getStamina() >= 5 ){
-                    stab(target);
-                }else{
-                    zweihander(target);
+                if (stamina >= 5) {
+                    target.setHp(target.getHp() - strength);
+                    stamina -= 5;
+                    System.out.println("💥 " + getName() + " uses HEAVY ATTACK on " + target.getName() + " (-" + strength + " HP). Stamina: " + stamina);
+                } else if (stamina >= 1) {
+                    int damage = strength / 2;
+                    target.setHp(target.getHp() - damage);
+                    stamina += 1;
+                    System.out.println("⚔️ " + getName() + " uses fallback WEAK ATTACK on " + target.getName() + " (-" + damage + " HP). +1 Stamina: " + stamina);
+                } else {
+                    stamina += 2;
+                    System.out.println("😴 " + getName() + " is too tired to attack. +2 Stamina: " + stamina);
                 }
                 break;
+
             case 1:
-                if(getStamina() >= 2){
-                    stab(target);
-                }else if(getStamina() <= 0){
-                    zweihander(target);
+                if (stamina >= 1) {
+                    int damage = strength / 2;
+                    target.setHp(target.getHp() - damage);
+                    stamina += 1;
+                    System.out.println("⚔️ " + getName() + " uses WEAK ATTACK on " + target.getName() + " (-" + damage + " HP). +1 Stamina: " + stamina);
+                } else {
+                    stamina += 2;
+                    System.out.println("😴 " + getName() + " is too tired to attack. +2 Stamina: " + stamina);
                 }
                 break;
+
             default:
-                System.out.println("Aren't you like dead or something");
+                System.out.println("Invalid attack type.");
                 break;
         }
 
-
-    }
-
-    public void stab(Character opponent){
-        int damage = opponent.getHp() - 3;
-        opponent.setHp(damage);
-        setStamina(getStamina() + 3);
-        System.out.println(" >> STAB! " + opponent.getName() +  " took a damage of: " + damage + ". +3 Stamina. Your Stamina is at: " + getStamina());
-    }
-
-    public void zweihander(Character opponent){
-        int damage = opponent.getHp() - strength;
-        opponent.setHp(damage);
-        setStamina(getStamina() - 5);
-        System.out.println(" >> ZWEIHANDER! " + opponent.getName() +  " took a damage of: " + damage + " -5 Stamina. Your Stamina is at: " + getStamina());
-    }
-
-    public void recover(Character opponent){
-        int recover = getStamina() + 2;
-        setStamina(recover);
-        System.out.println(" >> MISSED HIT! +2 Stamina. Your Stamina is at: " + getStamina());
-
-    }
-
-
-
-//    VISUALIZADORES
-
-
-    @Override
-    public String toString() {
-        return
-                '\n'+ "Character type: Warrior" + '\n'+
-                        "-------------------------------" + '\n'+
-                        "Name: " + getName() + '\n'+
-                        "Health: " + super.getHp() + '\n'+
-                        "Mana: " + stamina + '\n'+
-                        "strength: " + strength + '\n';
-    }
-
-    @Override
-    public void attack(Character target) {
-        System.out.println(getName() + " (Warrior) ha atacado a " + target.getName() + " critical hit " + strength);
-        target.setHp(target.getHp() - strength);
         if (target.getHp() <= 0) {
             target.setAlive(false);
             target.setHp(0);
-            System.out.println(target.getName() + " ha muerto.");
+            System.out.println("☠️ " + target.getName() + " has died.");
         }
+    }
+
+    // === DISPLAY ===
+    @Override
+    public String toString() {
+        return "\n[Warrior] " + getName() +
+                " | HP: " + getHp() +
+                " | Stamina: " + stamina +
+                " | Strength: " + strength;
     }
 }

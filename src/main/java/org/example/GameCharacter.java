@@ -1,12 +1,13 @@
+package org.example;
 import java.util.UUID;
 
-public abstract class Character {
+public abstract class GameCharacter {
     private String id = UUID.randomUUID().toString();
     private String name;
     private int hp;
     private boolean isAlive;
 
-    public Character(String name, int hp) {
+    public GameCharacter(String name, int hp) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.hp = hp;
