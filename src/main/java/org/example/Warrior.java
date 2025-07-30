@@ -70,22 +70,19 @@ public class Warrior extends GameCharacter implements Attacker {
     public void attack(GameCharacter target) {
         int typeAttack = r.nextInt(2); // 0 = Heavy attack, 1 = Weak attack
 
-        if (target.getHp() <= 0) {
-            target.setAlive(false);
-            return;
-        }
 
         switch (typeAttack) {
             case 0:
                 if (stamina >= 5) {
-                    target.setHp(target.getHp() - strength);
+                    int damage = strength;
                     stamina -= 5;
                     System.out.println("💥 " + getName() + " uses HEAVY ATTACK on " + target.getName() + " (-" + strength + " HP). Stamina: " + stamina);
+                    target.receiveDamage(damage);
                 } else if (stamina >= 1) {
                     int damage = strength / 2;
-                    target.setHp(target.getHp() - damage);
                     stamina += 1;
                     System.out.println("⚔️ " + getName() + " uses fallback WEAK ATTACK on " + target.getName() + " (-" + damage + " HP). +1 Stamina: " + stamina);
+                    target.receiveDamage(damage);
                 } else {
                     stamina += 2;
                     System.out.println("😴 " + getName() + " is too tired to attack. +2 Stamina: " + stamina);
@@ -95,9 +92,9 @@ public class Warrior extends GameCharacter implements Attacker {
             case 1:
                 if (stamina >= 1) {
                     int damage = strength / 2;
-                    target.setHp(target.getHp() - damage);
                     stamina += 1;
                     System.out.println("⚔️ " + getName() + " uses WEAK ATTACK on " + target.getName() + " (-" + damage + " HP). +1 Stamina: " + stamina);
+                    target.receiveDamage(damage);
                 } else {
                     stamina += 2;
                     System.out.println("😴 " + getName() + " is too tired to attack. +2 Stamina: " + stamina);
@@ -122,6 +119,7 @@ public class Warrior extends GameCharacter implements Attacker {
         return "\n[Warrior] " + getName() +
                 " | HP: " + getHp() +
                 " | Stamina: " + stamina +
-                " | Strength: " + strength;
+                " | Strength: " + strength +
+                " | Defense: " + getDefense();
     }
 }

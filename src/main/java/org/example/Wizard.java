@@ -68,21 +68,20 @@ public class Wizard extends GameCharacter implements Attacker {
     public void attack(GameCharacter target) {
         int typeAttack = r.nextInt(2); // 0 = fireball, 1 = staff hit
 
-        if (target.getHp() <= 0) {
-            target.setAlive(false);
-            return;
-        }
 
         switch (typeAttack) {
             case 0:
                 if (mana >= 5) {
-                    target.setHp(target.getHp() - intelligence);
+                    int damage = intelligence;
                     mana -= 5;
                     System.out.println("🔥 " + getName() + " casts FIREBALL on " + target.getName() + " (-" + intelligence + " HP). Mana: " + mana);
+                    target.receiveDamage(damage);
+
                 } else if (mana >= 1) {
-                    target.setHp(target.getHp() - 2);
+                    int damage =  2;
                     mana += 1;
                     System.out.println("🪄 " + getName() + " uses STAFF HIT on " + target.getName() + " (-2 HP). +1 Mana: " + mana);
+                    target.receiveDamage(damage);
                 } else {
                     mana += 2;
                     System.out.println("😓 " + getName() + " lacks mana. No attack. +2 Mana: " + mana);
@@ -91,9 +90,10 @@ public class Wizard extends GameCharacter implements Attacker {
 
             case 1:
                 if (mana >= 1) {
-                    target.setHp(target.getHp() - 2);
+                    int damage = 2;
                     mana += 1;
                     System.out.println("🪄 " + getName() + " uses STAFF HIT on " + target.getName() + " (-2 HP). +1 Mana: " + mana);
+                    target.receiveDamage(damage);
                 } else {
                     mana += 2;
                     System.out.println("😓 " + getName() + " lacks mana. No attack. +2 Mana: " + mana);
@@ -118,6 +118,7 @@ public class Wizard extends GameCharacter implements Attacker {
         return "\n[Wizard] " + getName() +
                 " | HP: " + getHp() +
                 " | Mana: " + mana +
-                " | Intelligence: " + intelligence;
+                " | Intelligence: " + intelligence +
+                " | Defense: " + getDefense();
     }
 }

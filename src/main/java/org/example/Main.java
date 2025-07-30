@@ -175,7 +175,7 @@ public class Main {
     }
 
     static void importCharactersFromCSV() {
-        System.out.print("Enter CSV file path (e.g., characters.csv): ");
+        System.out.print("Enter the entire CSV file path (e.g., user/documents/characters.csv): ");
         String filePath = scanner.nextLine();
 
         try (Scanner fileScanner = new Scanner(new java.io.File(filePath))) {
